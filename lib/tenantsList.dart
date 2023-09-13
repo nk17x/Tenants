@@ -1,6 +1,3 @@
-import 'dart:convert';
-
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 
@@ -11,10 +8,11 @@ class tenantsList extends StatefulWidget {
   State<tenantsList> createState() => _tenantsListState();
 }
 
+Map tenantslistFB = {};
 FirebaseDatabase database = FirebaseDatabase.instance;
 DatabaseReference ref = FirebaseDatabase.instance.ref("tenantsList/");
 bool isdataloaded = false;
-Map tenantslistFB = {};
+
 var houseVariable = "house1";
 int selectedIndex = 0;
 Map tenantslist2 = {
@@ -420,7 +418,7 @@ class _tenantsListState extends State<tenantsList> {
       ),
       body: SafeArea(
           child: Container(
-              color: Theme.of(context).colorScheme.onInverseSurface,
+              color: Colors.white,
               height: height,
               width: width,
               child: isdataloaded
@@ -464,25 +462,15 @@ class _tenantsListState extends State<tenantsList> {
                               itemCount: tenantslistFB[houseVariable].length,
                               itemBuilder: (context, index) {
                                 return Container(
-                                    color: houseVariable == "house1"
-                                        ? Theme.of(context)
-                                            .colorScheme
-                                            .onInverseSurface
-                                        : houseVariable == "house2"
-                                            ? Theme.of(context)
-                                                .colorScheme
-                                                .onInverseSurface
-                                            : Theme.of(context)
-                                                .colorScheme
-                                                .onInverseSurface,
+                                    color: Colors.white,
                                     child: ListTile(
                                       leading: CircleAvatar(
                                           child: Text(
                                               '${tenantslistFB["house3"][index]["room no"]}')),
                                       title: Text(
-                                          "Name: ${tenantslistFB[houseVariable][index]["name"]}"),
+                                          "${tenantslistFB[houseVariable][index]["name"].toString().toUpperCase()}"),
                                       subtitle: Text(
-                                          'Amount: ${tenantslistFB[houseVariable][index]["rentAmount"]} Bill Date: ${tenantslistFB[houseVariable][index]["rentMonth"]}${tenantslistFB[houseVariable][index]["rentYear"]}'),
+                                          'Amount: ${tenantslistFB[houseVariable][index]["rentAmount"]} \nBill Date: ${tenantslistFB[houseVariable][index]["rentMonth"]}${tenantslistFB[houseVariable][index]["rentYear"]}'),
                                       trailing: Text(
                                           "payment status: \n${tenantslistFB[houseVariable][index]["paymentStatus"]}"),
                                     ));
@@ -495,8 +483,14 @@ class _tenantsListState extends State<tenantsList> {
                         ),
                       ],
                     )
-                  : const CircularProgressIndicator(
-                      color: Colors.red,
+                  : Center(
+                      child: Container(
+                        height: 40,
+                        width: 40,
+                        child: const CircularProgressIndicator(
+                          color: Colors.green,
+                        ),
+                      ),
                     ))),
     );
   }
