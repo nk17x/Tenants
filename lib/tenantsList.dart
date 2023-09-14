@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:tenants_app/constants.dart';
 
 class tenantsList extends StatefulWidget {
   const tenantsList({super.key});
@@ -10,7 +11,10 @@ class tenantsList extends StatefulWidget {
 
 Map tenantslistFB = {};
 FirebaseDatabase database = FirebaseDatabase.instance;
-DatabaseReference ref = FirebaseDatabase.instance.ref("tenantsList/");
+// DatabaseReference ref = FirebaseDatabase.instance.ref("tenantsList/");
+// DatabaseReference tenantsDataRef =
+//     FirebaseDatabase.instance.ref("tenantsList2/");
+// DatabaseReference wingRef = FirebaseDatabase.instance.ref("wingList/");
 bool isdataloaded = false;
 
 var houseVariable = "house1";
@@ -382,25 +386,28 @@ class _tenantsListState extends State<tenantsList> {
   @override
   void initState() {
     isdataloaded = false;
+    // addWingData(wingName: "house2");
+
     writeDataToFB();
     readDataFromFb();
     super.initState();
   }
 
   writeDataToFB() async {
-    await ref.set(tenantslist2);
+    await constants.ref.set(tenantslist2);
   }
 
   readDataFromFb() async {
-    ref.onValue.listen((DatabaseEvent event) {
+    constants.ref.onValue.listen((DatabaseEvent event) {
       final data = event.snapshot.value as Map;
       setState(() {
         tenantslistFB = data;
+        constants.tenantslistConst = tenantslistFB;
         isdataloaded = true;
       });
 
       print(
-          "firebase data ${data["house3"][1]["rentAmount"]} ${tenantslistFB.keys.toList()[0]}");
+          "firebase data ${data["house3"][1]["rentAmount"]} ${tenantslistFB.keys.toList()}");
     });
   }
 
@@ -466,7 +473,7 @@ class _tenantsListState extends State<tenantsList> {
                                     child: ListTile(
                                       leading: CircleAvatar(
                                           child: Text(
-                                              '${tenantslistFB["house3"][index]["room no"]}')),
+                                              '${tenantslistFB[houseVariable][index]["room no"]}')),
                                       title: Text(
                                           "${tenantslistFB[houseVariable][index]["name"].toString().toUpperCase()}"),
                                       subtitle: Text(
