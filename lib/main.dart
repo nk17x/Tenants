@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tenants_app/manageTenants.dart';
+import 'package:tenants_app/receiveRent.dart';
 import 'tenantsList.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -58,7 +59,9 @@ class _MyAppState extends State<MyApp> {
               ? tenantsList()
               : bottomNavIndex == 1
                   ? manageTenants()
-                  : tenantsList()),
+                  : bottomNavIndex == 2
+                      ? recieveRent()
+                      : tenantsList()),
     );
   }
 }

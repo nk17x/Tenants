@@ -1,5 +1,4 @@
 import 'package:firebase_database/firebase_database.dart';
-import 'package:tenants_app/tenantsList.dart';
 
 class constants {
   static Map tenantslistConst = {};

@@ -10,122 +10,18 @@ class tenantsList extends StatefulWidget {
 }
 
 Map tenantslistFB = {};
-FirebaseDatabase database = FirebaseDatabase.instance;
-// DatabaseReference ref = FirebaseDatabase.instance.ref("tenantsList/");
-// DatabaseReference tenantsDataRef =
-//     FirebaseDatabase.instance.ref("tenantsList2/");
-// DatabaseReference wingRef = FirebaseDatabase.instance.ref("wingList/");
 bool isdataloaded = false;
 bool isDataempty = false;
 var houseVariable = "";
 int selectedIndex = 0;
-Map tenantslist2 = {
-  "house1": {
-    {
-      "name": "nadeem",
-      "room no": "1",
-      "rentAmount": "1000",
-      "rentMonth": "JUNE",
-      "rentYear": "2023",
-      "paymentStatus": "pending"
-    },
-    {
-      "name": "zeeshan",
-      "room no": "2",
-      "rentAmount": "1250",
-      "rentMonth": "JUNE",
-      "rentYear": "2023",
-      "paymentStatus": "pending"
-    },
-    {
-      "name": "fatima",
-      "room no": "3",
-      "rentAmount": "650",
-      "rentMonth": "JUNE",
-      "rentYear": "2023",
-      "paymentStatus": "pending"
-    },
-    {
-      "name": "abdul",
-      "room no": "4",
-      "rentAmount": "938",
-      "rentMonth": "JUNE",
-      "rentYear": "2023",
-      "paymentStatus": "pending"
-    },
-    {
-      "name": "zahida",
-      "room no": "5",
-      "rentAmount": "1000rs",
-      "rentMonth": "JUNE",
-      "rentYear": "2023",
-      "paymentStatus": "pending"
-    },
-    {
-      "name": "tanveer",
-      "room no": "6",
-      "rentAmount": "683",
-      "rentMonth": "JUNE",
-      "rentYear": "2023",
-      "paymentStatus": "pending"
-    },
-    {
-      "name": "priti",
-      "room no": "7",
-      "rentAmount": "569",
-      "rentMonth": "JUNE",
-      "rentYear": "2023",
-      "paymentStatus": "pending"
-    },
-    {
-      "name": "rita",
-      "room no": "8",
-      "rentAmount": "1120",
-      "rentMonth": "JUNE",
-      "rentYear": "2023",
-      "paymentStatus": "pending"
-    },
-    {
-      "name": "ateeq",
-      "room no": "9",
-      "rentAmount": "1146",
-      "rentMonth": "JUNE",
-      "rentYear": "2023",
-      "paymentStatus": "pending"
-    },
-    {
-      "name": "azhar",
-      "room no": "10",
-      "rentAmount": "863",
-      "rentMonth": "JUNE",
-      "rentYear": "2023",
-      "paymentStatus": "pending"
-    },
-    {
-      "name": "ali",
-      "room no": "11",
-      "rentAmount": "568",
-      "rentMonth": "JUNE",
-      "rentYear": "2023",
-      "paymentStatus": "pending"
-    },
-  }
-};
 
 class _tenantsListState extends State<tenantsList> {
   @override
   void initState() {
     isdataloaded = false;
-    // addWingData(wingName: "house2");
-
-    // writeDataToFB();
     readDataFromFb();
     super.initState();
   }
-
-  // writeDataToFB() async {
-  //   await constants.ref.set(tenantslist2);
-  // }
 
   readDataFromFb() async {
     constants.ref.onValue.listen((DatabaseEvent event) {
@@ -144,12 +40,10 @@ class _tenantsListState extends State<tenantsList> {
           tenantslistFB = data;
           constants.tenantslistConst = tenantslistFB;
           houseVariable = tenantslistFB.keys.toList()[0];
+          selectedIndex = 0;
           isdataloaded = true;
         });
       }
-
-      // print(
-      //     "firebase data ${data["house3"][1]["rentAmount"]} ${tenantslistFB.keys.toList()}");
     });
   }
 
@@ -162,7 +56,7 @@ class _tenantsListState extends State<tenantsList> {
         toolbarHeight: 40,
         centerTitle: true,
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text("Tenants App",
+        title: Text("Tenants",
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
       ),
       body: SafeArea(
@@ -223,9 +117,8 @@ class _tenantsListState extends State<tenantsList> {
                                           title: Text(
                                               "${tenantslistFB[houseVariable][index]["name"].toString().toUpperCase()}"),
                                           subtitle: Text(
-                                              'Amount: ${tenantslistFB[houseVariable][index]["rentAmount"]} \nBill Date: ${tenantslistFB[houseVariable][index]["rentMonth"]}${tenantslistFB[houseVariable][index]["rentYear"]}'),
-                                          trailing: Text(
-                                              "payment status: \n${tenantslistFB[houseVariable][index]["paymentStatus"]}"),
+                                              'Rent Amount: ${tenantslistFB[houseVariable][index]["rentAmount"]} \nBill Date: ${tenantslistFB[houseVariable][index]["rentMonth"]} ${tenantslistFB[houseVariable][index]["rentYear"]} \nPayment Status: ${tenantslistFB[houseVariable][index]["paymentStatus"].toString().toUpperCase()}'),
+                                          // trailing: Text(""),
                                         ));
                                   },
                                   separatorBuilder: (context, index) {

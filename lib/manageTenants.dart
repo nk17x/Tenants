@@ -128,23 +128,6 @@ class _manageTenantsState extends State<manageTenants> {
     };
   }
 
-  // areAllInputsFilled() {
-  //   if (selectedWing == "") {
-  //     snackbar("Please select a Wing!");
-  //     return;
-  //   } else if (tenantNameCtrl.value.text == "") {
-  //     snackbar("Please enter valid Tenant Name!$selectedWing");
-  //     return;
-  //   } else if (tenantRoomNoCtrl.value.text == "") {
-  //     snackbar("Please enter valid Room No!");
-  //     return;
-  //   } else if (tenantRentAmountCtrl.value.text == "") {
-  //     snackbar("Please enter valid Rent Amount!");
-  //     return;
-  //   }
-  //   return;
-  // }
-
   void clearData() {
     selectedWing = "";
     wingNameCtrl.text = "";
@@ -164,7 +147,7 @@ class _manageTenantsState extends State<manageTenants> {
         toolbarHeight: 40,
         centerTitle: true,
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text("Tenants App",
+        title: Text("Tenants",
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
       ),
       body: SafeArea(
