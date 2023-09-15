@@ -3,7 +3,7 @@ import 'package:tenants_app/tenantsList.dart';
 
 class constants {
   static Map tenantslistConst = {};
-  static DatabaseReference ref = FirebaseDatabase.instance.ref("tenantsList/");
+  static DatabaseReference ref = FirebaseDatabase.instance.ref("tenantsList2/");
   static DatabaseReference tenantsDataRef =
       FirebaseDatabase.instance.ref("tenantsList2/");
   static DatabaseReference wingRef = FirebaseDatabase.instance.ref("wingList/");

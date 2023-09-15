@@ -9,6 +9,7 @@ TextEditingController tenantRoomNoCtrl = TextEditingController();
 TextEditingController tenantRentAmountCtrl = TextEditingController();
 
 List<String> houseList = <String>[];
+String selectedWing = "";
 
 class manageTenants extends StatefulWidget {
   const manageTenants({super.key});
@@ -18,31 +19,34 @@ class manageTenants extends StatefulWidget {
 }
 
 class _manageTenantsState extends State<manageTenants> {
+  final GlobalKey<FormFieldState> _key = GlobalKey<FormFieldState>();
+
   @override
   void initState() {
     // createHouseList();
+
     getWingData();
     super.initState();
   }
 
-  // void createHouseList() {
-  //   constants.tenantslistConst.keys.toList().forEach((value) {
-  //     houseList.add(value);
-  //   });
-  //   houseList = houseList.toSet().toList();
-  // }
+  @override
+  void dispose() {
+    clearData();
+    super.dispose();
+  }
 
   void getWingData() async {
     constants.wingRef.onValue.listen((DatabaseEvent event) async {
       if (!event.snapshot.exists) return;
       final wingDataRef = event.snapshot.value as List;
-
-      setState(() {
-        wingDataRef.forEach((element) {
-          houseList.add(element.toString());
+      if (mounted) {
+        setState(() {
+          wingDataRef.forEach((element) {
+            houseList.add(element.toString());
+          });
+          houseList = houseList.toSet().toList();
         });
-        houseList = houseList.toSet().toList();
-      });
+      }
     });
   }
 
@@ -59,6 +63,7 @@ class _manageTenantsState extends State<manageTenants> {
 
     await constants.wingRef.update({"${wingDataRef.length}": "$wingName"});
     wingNameCtrl.text = "";
+    clearData();
     Navigator.pop(context);
   }
 
@@ -67,6 +72,19 @@ class _manageTenantsState extends State<manageTenants> {
       required String roomNo,
       required String tenantName,
       required String rentAmount}) async {
+    if (selectedWing == "") {
+      snackbar("Please select a Wing!");
+      return;
+    } else if (tenantNameCtrl.value.text == "") {
+      snackbar("Please enter valid Tenant Name!");
+      return;
+    } else if (tenantRoomNoCtrl.value.text == "") {
+      snackbar("Please enter valid Room No!");
+      return;
+    } else if (tenantRentAmountCtrl.value.text == "") {
+      snackbar("Please enter valid Rent Amount!");
+      return;
+    }
     final temp = await constants.tenantsDataRef.child("$wingName/").get();
     if (!temp.exists) {
       await constants.tenantsDataRef.child("$wingName/").set({
@@ -75,14 +93,12 @@ class _manageTenantsState extends State<manageTenants> {
           "room no": roomNo,
           "rentAmount": rentAmount,
           "rentMonth": "JUNE",
-          "rentYear": 2023,
+          "rentYear": "2023",
           "paymentStatus": "pending"
         }
-      });
+      }).whenComplete(
+          () => {snackbar("Tenant has been added successfully!"), clearData()});
 
-      tenantNameCtrl.text = "";
-      tenantRentAmountCtrl.text = "";
-      tenantRoomNoCtrl.text = "";
       return;
     }
     final wingDataRef = temp.value as List;
@@ -94,26 +110,48 @@ class _manageTenantsState extends State<manageTenants> {
         "room no": roomNo,
         "rentAmount": rentAmount,
         "rentMonth": "JUNE",
-        "rentYear": 2023,
+        "rentYear": "2023",
         "paymentStatus": "pending"
       }
-    });
+    }).whenComplete(
+        () => {snackbar("Tenant has been added successfully!"), clearData()});
+  }
+
+  snackbar(String text) {
+    return {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          content: Text(
+            text,
+            style: TextStyle(color: Colors.white),
+          )))
+    };
+  }
+
+  // areAllInputsFilled() {
+  //   if (selectedWing == "") {
+  //     snackbar("Please select a Wing!");
+  //     return;
+  //   } else if (tenantNameCtrl.value.text == "") {
+  //     snackbar("Please enter valid Tenant Name!$selectedWing");
+  //     return;
+  //   } else if (tenantRoomNoCtrl.value.text == "") {
+  //     snackbar("Please enter valid Room No!");
+  //     return;
+  //   } else if (tenantRentAmountCtrl.value.text == "") {
+  //     snackbar("Please enter valid Rent Amount!");
+  //     return;
+  //   }
+  //   return;
+  // }
+
+  void clearData() {
+    selectedWing = "";
+    wingNameCtrl.text = "";
     tenantNameCtrl.text = "";
     tenantRentAmountCtrl.text = "";
     tenantRoomNoCtrl.text = "";
-
-    //
-
-    // await constants.tenantsDataRef.child("$wingName/").update({
-    //   recordNo: {
-    //     "name": "zahida",
-    //     "room no": 5,
-    //     "rentAmount": 1000,
-    //     "rentMonth": "JUNE",
-    //     "rentYear": 2023,
-    //     "paymentStatus": "pending"
-    //   },
-    // });
+    _key.currentState?.reset();
   }
 
   @override
@@ -151,6 +189,7 @@ class _manageTenantsState extends State<manageTenants> {
                     Container(
                       width: width * 0.63,
                       child: DropdownButtonFormField(
+                        key: _key,
                         alignment: AlignmentDirectional.centerEnd,
                         borderRadius: BorderRadius.circular(20),
                         decoration: InputDecoration(
@@ -170,7 +209,7 @@ class _manageTenantsState extends State<manageTenants> {
                             ),
                           );
                         }).toList(),
-                        onChanged: (value) => {},
+                        onChanged: (value) => {selectedWing = value.toString()},
                       ),
                     ),
                     TextButton(
@@ -326,9 +365,9 @@ class _manageTenantsState extends State<manageTenants> {
                       ],
                     ),
                     ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           addTenantData(
-                              wingName: "house3",
+                              wingName: selectedWing,
                               roomNo: tenantRoomNoCtrl.value.text,
                               rentAmount: tenantRentAmountCtrl.value.text,
                               tenantName: tenantNameCtrl.value.text);
